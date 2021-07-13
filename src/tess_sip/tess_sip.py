@@ -1,5 +1,6 @@
 import lightkurve as lk
 import numpy as np
+from .utils import *
 from scipy import sparse
 from tqdm import tqdm
 import warnings
