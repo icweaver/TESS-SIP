@@ -46,6 +46,7 @@ def SIP(
     sff=False,
     sff_kwargs={},
     custom_periods=None,
+    time_bin_size=None,
 ):
     """
     Systematics-insensitive periodogram for finding periods in long period NASA's TESS data.
@@ -164,6 +165,9 @@ def SIP(
             lcf.flux = lcf.sap_flux
             lcf.flux_err = lcf.sap_flux_err
         tpfs_uncorr = [(lcf + np.nan_to_num(lcf.sap_bkg))[np.isfinite(lcf.sap_bkg)] for lcf in tpfs]
+
+        if time_bin_size is not None:
+            tpfs_uncorr = [lcf.bin(time_bin_size=time_bin_size) for lcf in tpfs_uncorr]
 
         lc = lk.LightCurveCollection(tpfs_uncorr).stitch(lambda x:x).normalize()
         lc.flux_err.value[~np.isfinite(lc.flux_err.value)] = np.nanmedian(lc.flux_err.value)
